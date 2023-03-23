@@ -8,11 +8,12 @@ from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
 from gensim.models.coherencemodel import CoherenceModel
 # import matplotlib.pyplot as plt
+from nltk.stem import WordNetLemmatizer
+
 
 PATH = "test/d.pdf"
 
-
-def load_data3(path):
+def load_data_pdf(path):
     """
     Input  : path to file
     Purpose: loading text file
@@ -58,6 +59,8 @@ def preprocess_data(doc_set):
     en_stop = set(stopwords.words('english'))
     # Create p_stemmer of class PorterStemmer
     p_stemmer = PorterStemmer()
+    lemmatizer = WordNetLemmatizer()
+
     # list for tokenized documents in loop
     texts = []
     # loop through document list
@@ -68,9 +71,11 @@ def preprocess_data(doc_set):
         # remove stop words from tokens
         stopped_tokens = [i for i in tokens if not i in en_stop]
         # stem tokens
-        stemmed_tokens = [p_stemmer.stem(i) for i in stopped_tokens]
+        # stemmed_tokens = [p_stemmer.stem(i) for i in stopped_tokens]
+        # lematize tokens
+        lemmatized_tokens = [lemmatizer.lemmatize(i) for i in stopped_tokens]
         # add tokens to list
-        texts.append(stemmed_tokens)
+        texts.append(lemmatized_tokens)
     return texts
     
 
@@ -95,8 +100,8 @@ def create_gensim_lsa_model(doc_clean,number_of_topics,words):
     Output : return LSA model
     """
     dictionary,doc_term_matrix=prepare_corpus(doc_clean)
-    model_list, coherence_values = compute_coherence_values(dictionary, doc_term_matrix, doc_clean,
-                                                            stop=6, start=1, step=1)
+    # model_list, coherence_values = compute_coherence_values(dictionary, doc_term_matrix, doc_clean,
+    #                                                         stop=6, start=1, step=1)
     # generate LSA model
     lsamodel = LsiModel(doc_term_matrix, num_topics=number_of_topics, id2word = dictionary)  # train model
     print(lsamodel.print_topics(num_topics=number_of_topics, num_words=words))
@@ -140,7 +145,6 @@ def compute_coherence_values(dictionary, doc_term_matrix, doc_clean, stop, start
 # LSA Model
 number_of_topics = 7
 words = 10
-page_list = load_data3(PATH)
+page_list = load_data_pdf(PATH)
 clean_text=preprocess_data(page_list)
-print(clean_text)
 model=create_gensim_lsa_model(clean_text,number_of_topics,words)
