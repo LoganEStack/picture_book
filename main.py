@@ -1,6 +1,5 @@
 # importing required modules
-import PyPDF2
-import os.path
+from PyPDF2 import PdfReader
 from gensim import corpora
 from gensim.models import LsiModel
 from nltk.tokenize import RegexpTokenizer
@@ -9,10 +8,12 @@ from nltk.stem.porter import PorterStemmer
 from gensim.models.coherencemodel import CoherenceModel
 # import matplotlib.pyplot as plt
 from nltk.stem import WordNetLemmatizer
-
+import requests
+import re
 
 PATH = "test/d.pdf"
 
+# TODO implement support for scanned pdfs
 def load_data_pdf(path):
     """
     Input  : path to file
@@ -22,10 +23,9 @@ def load_data_pdf(path):
     """
     pages_list = []
     with open(path,"rb") as pdfFileObj:
-        pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
-        # print(pdfReader.numPages)
-        pageObj = pdfReader.getPage(0)
-        pages_list.append(pageObj.extractText())
+        reader = PdfReader(path)
+        page = reader.pages[0]
+        pages_list.append(page.extract_text())
     return pages_list
 
 
@@ -144,7 +144,27 @@ def compute_coherence_values(dictionary, doc_term_matrix, doc_clean, stop, start
 
 # LSA Model
 number_of_topics = 7
-words = 10
+words = 5
 page_list = load_data_pdf(PATH)
 clean_text=preprocess_data(page_list)
 model=create_gensim_lsa_model(clean_text,number_of_topics,words)
+
+# Extract topics and issue curl
+page_topics = model.print_topics(num_topics=number_of_topics, num_words=words)
+result = []
+for page in page_topics:
+    topics = ', '.join(re.findall(r'(?<=\*").*?(?=")', page[1]))
+    r = requests.post(
+        "https://api.deepai.org/api/text2img",
+        data={
+            'text': 'Illustrated drawing of the following themes: ' + topics,
+        },
+        headers={'api-key': 'quickstart-QUdJIGlzIGNvbWluZy4uLi4K'}
+    )
+    try:
+        result.append(r.json()['output_url'])
+    except KeyError:
+        print("API didn't like that call.")
+print(result)
+
+# TODO take resulting image and place it on a new page in pdf
