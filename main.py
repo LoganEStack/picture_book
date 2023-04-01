@@ -128,20 +128,6 @@ def compute_coherence_values(dictionary, doc_term_matrix, doc_clean, stop, start
         coherence_values.append(coherencemodel.get_coherence())
     return model_list, coherence_values
 
-# def plot_graph(doc_clean,start, stop, step):
-#     dictionary,doc_term_matrix=prepare_corpus(doc_clean)
-#     model_list, coherence_values = compute_coherence_values(dictionary, doc_term_matrix,doc_clean,
-#                                                             stop=2, start=12, step=1)
-    # Show graph
-#     x = range(start, stop, step)
-#     plt.plot(x, coherence_values)
-#     plt.xlabel("Number of Topics")
-#     plt.ylabel("Coherence score")
-#     plt.legend(("coherence_values"), loc='best')
-#     plt.show()
-# start,stop,step=2,12,1
-# plot_graph(clean_text,start,stop,step)
-
 # LSA Model
 number_of_topics = 7
 words = 5
