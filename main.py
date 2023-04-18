@@ -142,8 +142,9 @@ for page in page_topics:
     topics = ', '.join(re.findall(r'(?<=\*").*?(?=")', page[1]))
     r = requests.post(
         "https://api.deepai.org/api/text2img",
-        data={
-            'text': 'Illustrated drawing of the following themes: ' + topics,
+        files = {
+            'text': (None, 'Illustrated drawing of the following themes: ' + topics),
+            'grid_size': (None, '1'),
         },
         headers={'api-key': 'quickstart-QUdJIGlzIGNvbWluZy4uLi4K'}
     )
