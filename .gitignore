@@ -38,6 +38,7 @@ pip-log.txt
 pip-delete-this-directory.txt
 
 # Unit test / coverage reports
+samples
 htmlcov/
 .tox/
 .nox/
@@ -128,3 +129,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# VS Code
+.vscode
