@@ -1,20 +1,18 @@
-from libraries.load import load_data_pdf
-from libraries.topic_modeling import preprocess_data, create_gensim_lsa_model
+from libraries.pdf import read_pdf, add_pics_to_pdf
+from libraries.topic_modeling import preprocess_data, create_lsa_model
 from libraries.generate_pictures import generate_pictures
 
-
 if __name__ == "__main__":
-    PATH = "sample.pdf"
+    PATH = "samples/sample.pdf"
+    NUM_TOPICS = 7
+    NUM_WORDS = 5
 
     # LSA Model
-    number_of_topics = 7
-    words = 5
-    page_list = load_data_pdf(PATH)
-    clean_text = preprocess_data(page_list)
-    model = create_gensim_lsa_model(clean_text,number_of_topics,words)
+    page_list = read_pdf(PATH)
+    preprocessed_text = preprocess_data(page_list)
+    model = create_lsa_model(preprocessed_text, NUM_TOPICS, NUM_WORDS)
 
-    # Extract topics and issue curl
-    page_topics = model.print_topics(num_topics=number_of_topics, num_words=words)
-    # pictures = generate_pictures(page_topics)
-
-# TODO take resulting image and place it on a new page in pdf
+    # Extract topics and issue curl to generate pictures
+    page_topics = model.print_topics(num_topics=NUM_TOPICS, num_words=NUM_WORDS)
+    pictures = generate_pictures(page_topics)
+    add_pics_to_pdf(PATH, pictures)
