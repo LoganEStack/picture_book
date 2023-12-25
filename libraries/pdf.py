@@ -1,4 +1,4 @@
-from PyPDF2 import PdfReader, PdfWriter
+from pypdf import PdfReader, PdfWriter
 import os
 
 
@@ -48,8 +48,7 @@ def add_pics_to_pdf(path, pictures):
             writer.add_page(page)
             writer.add_blank_page()
 
-
         with open(new_path,'wb') as output_pdf:
             writer.write(output_pdf)
 
-add_pics_to_pdf("samples/sample_2_page.pdf", [])
+# add_pics_to_pdf("samples/sample_2_page.pdf", [])
