@@ -38,10 +38,6 @@ Requires Python3 to run.
    ```sh
    pip install -r requirements.txt
    ```
-3. Run the application
-   ```sh
-   python main.py
-   ```
 
 
 <!-- Layout -->
@@ -66,6 +62,18 @@ Contains all logic related to the extraction and representation of a page's cent
 This project can be used to improve any novel or short story 
 that you ever thought "needed more pictures."
 
+### Input
+
+The input to the project is a call to the main python file followed by a parameter 
+for the path to the file that you wish to add pictures to.  
+```sh
+   python main.py "my_book.pdf"
+```
+
+### Output
+
+The output is a new file in the same directory as the file uploaded by the user 
+with "_picture_book" attached to the end of the file name.
 
 <!-- ROADMAP -->
 ## Roadmap
