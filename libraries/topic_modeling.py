@@ -7,7 +7,7 @@ from nltk.stem import WordNetLemmatizer
 #from nltk.stem.porter import PorterStemmer
 
 
-def preprocess_data(documents):
+def preprocess_data(pages):
     """Pre-processes text to clean it up.
 
     This involves:
@@ -16,25 +16,43 @@ def preprocess_data(documents):
         - lemmatization (reducing a word to its root meaning (ex. creative -> create))
     
     Args
-        documents: List of documents to pre-process.
+        pages: List of pages to pre-process.
     Returns
         Text that has been cleaned up and simplified.
     """
     tokenizer = RegexpTokenizer(r'\w+')
     stop_list = set(stopwords.words('english'))
-    # Could use a stemmer if we wanted, which is a more brute-ish, codeified lemmatizer
-    # stemmer = PorterStemmer()
     lemmatizer = WordNetLemmatizer()
+    # could use a stemmer (a more brute-ish, codeified lemmatizer) instead if we wanted 
+    # stemmer = PorterStemmer()
 
     preprocessed_text = []
-    for doc in documents:
-        tokens = tokenizer.tokenize(doc.lower())
+    for page in pages:
+        tokens = tokenizer.tokenize(page.lower())
         # remove stop words from tokens
         stopped_tokens = [i for i in tokens if not i in stop_list]
         # stemmed_tokens = [p_stemmer.stem(i) for i in stopped_tokens]
         lemmatized_tokens = [lemmatizer.lemmatize(i) for i in stopped_tokens]
         preprocessed_text.append(lemmatized_tokens)
     return preprocessed_text
+
+
+def create_lsa_model(preprocessed_pages, num_topics, num_words):
+    """Create LSA (Latent Semantic Analysis) model
+
+    Args
+        preprocessed_pages: Cleaned up text from each page.
+        num_topics: Number of topics.
+        num_words: Number of words associated with each topic.
+    Returns
+        The LSA model.
+    """
+    dictionary, doc_term_matrix = prepare_corpus(preprocessed_pages)
+    # model_list, coherence_values = compute_coherence_values(dictionary, doc_term_matrix, preprocessed_pages,
+    #                                                         stop=6, start=1, step=1)
+    # generate LSA model
+    lsa_model = LsiModel(doc_term_matrix, num_topics=num_topics, id2word = dictionary)
+    return lsa_model
     
 
 def prepare_corpus(preprocessed_text):
@@ -43,37 +61,16 @@ def prepare_corpus(preprocessed_text):
     Args
         preprocessed_text: clean document
     Returns
-        term dictionary and Document Term Matrix
+        term dictionary and page term matrix
     """
-    # Creating the term dictionary of our courpus, where every unique term is assigned an index. 
-    # dictionary = corpora.Dictionary(preprocessed_text)
+    # create the term dictionary of our courpus, where every unique term is assigned an index
     dictionary = corpora.Dictionary(preprocessed_text)
-    # Converting list of documents (corpus) into Document Term Matrix using dictionary prepared above.
-    doc_term_matrix = [dictionary.doc2bow(doc) for doc in preprocessed_text]
-    # generate LDA model
-    return dictionary,doc_term_matrix
+    # convert list of pages (corpus) into page term matrix
+    page_term_matrix = [dictionary.doc2bow(page) for page in preprocessed_text]
+    return dictionary, page_term_matrix
 
 
-def create_lsa_model(preprocessed_text, num_topics, num_words):
-    """Create LSA (Latent Semantic Analysis) model
-
-    Args
-        preprocessed_text: Cleaned up text.
-        num_topics: Number of topics.
-        num_words: Number of words associated with each topic.
-    Returns
-        The LSA model.
-    """
-    dictionary, doc_term_matrix = prepare_corpus(preprocessed_text)
-    # model_list, coherence_values = compute_coherence_values(dictionary, doc_term_matrix, preprocessed_text,
-    #                                                         stop=6, start=1, step=1)
-    # generate LSA model
-    lsa_model = LsiModel(doc_term_matrix, num_topics=num_topics, id2word = dictionary)
-    print(lsa_model.print_topics(num_topics=num_topics, num_words=num_words))
-    return lsa_model
-
-
-def compute_coherence_values(dictionary, doc_term_matrix, preprocessed_text, stop, start=2, step=3):
+def compute_coherence_values(dictionary, page_term_matrix, preprocessed_pages, stop, start=2, step=3):
     """Compute c_v coherence for various number of topics
 
     Args
@@ -89,8 +86,8 @@ def compute_coherence_values(dictionary, doc_term_matrix, preprocessed_text, sto
     model_list = []
     for num_topics in range(start, stop, step):
         # generate LSA model
-        model = LsiModel(doc_term_matrix, num_topics=num_topics, id2word = dictionary)
+        model = LsiModel(page_term_matrix, num_topics=num_topics, id2word = dictionary)
         model_list.append(model)
-        coherencemodel = CoherenceModel(model=model, texts=preprocessed_text, dictionary=dictionary, coherence='c_v')
+        coherencemodel = CoherenceModel(model=model, texts=preprocessed_pages, dictionary=dictionary, coherence='c_v')
         coherence_values.append(coherencemodel.get_coherence())
     return model_list, coherence_values
