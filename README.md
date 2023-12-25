@@ -18,7 +18,7 @@ a small experiment with natural langauge processing with a fun and whimsical end
 
 ### Built With
 
-[![Python][Python]][React-url]
+[![Python][Python]][python-url]
 
 
 <!-- GETTING STARTED -->
@@ -81,3 +81,4 @@ that you ever thought "needed more pictures."
 <!-- MARKDOWN LINKS & IMAGES -->
 [DeepAI]: https://deepai.org/
 [Python]: https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54
+[python-url]: https://www.python.org/
