@@ -1,10 +1,10 @@
 <!-- INTRODUCTION -->
-<!-- <h2 align="center">illustrate_me</h3>
+<h2 align="center">illustrate_me</h3>
   <p align="center">
     Adds relevant illustrations to pages in a pdf.
     <br />
   </p>
-</div> -->
+</div>
 
 
 <!-- ABOUT THE PROJECT -->
