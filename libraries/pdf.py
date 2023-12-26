@@ -42,35 +42,19 @@ def add_pics_to_pdf(path, pictures):
                               "Please move this file out of the specified directory " 
                               "so that it does not get overwritten.")
     pictures[0].save(
-        "pictures.pdf", save_all=True, append_images=pictures[1:]
+        "picture_book_images.pdf", save_all=True, append_images=pictures[1:]
     )
-    with open(path, "rb") as pdf_book, open("pictures.pdf", "rb") as pdf_pic:
+
+    with open(path, "rb") as pdf_book, open("picture_book_images.pdf", "rb") as pdf_pic:
         reader_book = PdfReader(pdf_book)
         reader_pic = PdfReader(pdf_pic)
-        writer = PdfWriter()
 
+        writer = PdfWriter()
         for page, pic in zip(reader_book.pages, reader_pic.pages):
             writer.add_page(page)
-            writer.add_page(pic)
-            # TODO: fix case with original pdf having blank page
+            background = writer.add_blank_page()
+            background.merge_page(pic)
 
-        with open(new_path,'wb') as output_pdf:
-            writer.write(output_pdf)
-
-
-    # with open(path, "rb") as inFile, open("pictures.pdf", "rb") as overlay:
-    #     original = PdfReader(inFile)
-    #     background = original.pages[0]
-    #     foreground = PdfReader(overlay).pages[0]
-        
-    #     # merge the first two pages
-    #     background.merge_page(foreground)
-        
-    #     # add all pages to a writer
-    #     writer = PdfWriter()
-    #     for page in original.pages:
-    #         writer.add_page(page)
-        
-    #     # write everything in the writer to a file
-    #     with open("modified.pdf", "wb") as outFile:
-    #         writer.write(outFile)
+        # write everything in the writer to a file
+        with open(new_path, "wb") as outFile:
+            writer.write(outFile)

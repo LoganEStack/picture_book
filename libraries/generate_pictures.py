@@ -1,7 +1,6 @@
 import requests
 import re
 from PIL import Image
-from fpdf import FPDF
 
 def generate_pictures(page_topics):
     """Generate an image based on keywords for each page.
@@ -19,17 +18,16 @@ def generate_pictures(page_topics):
     for page in page_topics:
         if page:
             topics = ', '.join(re.findall(r'(?<=\*").*?(?=")', page[1]))
-            # r = requests.post(
-            #     "https://api.deepai.org/api/text2img",
-            #     files = {
-            #         'text': (None, 'Illustrated drawing of the following themes: ' + topics),
-            #         'grid_size': (None, '1'),
-            #     },
-            #     headers={'api-key': API_KEY}
-            # )
+            r = requests.post(
+                "https://api.deepai.org/api/text2img",
+                files = {
+                    'text': (None, 'Illustrated drawing of the following themes: ' + topics),
+                    'grid_size': (None, '1'),
+                },
+                headers={'api-key': API_KEY}
+            )
             try:
-                # image_url = r.json()['output_url']
-                image_url = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/SNice.svg/1200px-SNice.svg.png"
+                image_url = r.json()['output_url']
                 img_data = requests.get(image_url, stream=True)
 
                 base_width= 300
@@ -41,6 +39,4 @@ def generate_pictures(page_topics):
                 images.append(img)
             except KeyError as e:
                 print("There was an issue with the API call.", e)
-            # with open(f'images/image_{count}.jpg', 'wb') as handler:
-            #     handler.write(img_data)
     return images

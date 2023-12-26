@@ -5,11 +5,10 @@ import sys
 
 
 if __name__ == "__main__":
-    # if len(sys.argv) != 2:
-    #     raise IndexError("picture_book takes exactly 1 argument. "
-    #                      "The proper syntax is:\npython main.py <file path>")
-    # path = sys.argv[1]
-    path = "samples/sample_2_page.pdf"
+    if len(sys.argv) != 2:
+        raise IndexError("picture_book takes exactly 1 argument. "
+                         "The proper syntax is:\npython main.py <file path>")
+    path = sys.argv[1]
     NUM_TOPICS = 7
     NUM_WORDS = 5
 
