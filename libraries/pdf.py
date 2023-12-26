@@ -20,6 +20,7 @@ def read_pdf(path):
             reader = PdfReader(path)
             for page in reader.pages:
                 pages.append(page.extract_text())
+    assert pages != ''
     return pages
 
 
@@ -28,6 +29,7 @@ def add_pics_to_pdf(path, pictures):
 
     Args
         path: The path to the file.
+        pictures: 
     Returns
         A pdf file containing the original text pages as well as the newly generated pictures.
     Raises:
@@ -39,16 +41,36 @@ def add_pics_to_pdf(path, pictures):
         raise FileExistsError("A file with the name", new_path, "already exists. "
                               "Please move this file out of the specified directory " 
                               "so that it does not get overwritten.")
-    
-    with open(path, "rb") as file:
-        reader = PdfReader(file)
+    pictures[0].save(
+        "pictures.pdf", save_all=True, append_images=pictures[1:]
+    )
+    with open(path, "rb") as pdf_book, open("pictures.pdf", "rb") as pdf_pic:
+        reader_book = PdfReader(pdf_book)
+        reader_pic = PdfReader(pdf_pic)
         writer = PdfWriter()
 
-        for page in reader.pages:
+        for page, pic in zip(reader_book.pages, reader_pic.pages):
             writer.add_page(page)
-            writer.add_blank_page()
+            writer.add_page(pic)
+            # TODO: fix case with original pdf having blank page
 
         with open(new_path,'wb') as output_pdf:
             writer.write(output_pdf)
 
-# add_pics_to_pdf("samples/sample_2_page.pdf", [])
+
+    # with open(path, "rb") as inFile, open("pictures.pdf", "rb") as overlay:
+    #     original = PdfReader(inFile)
+    #     background = original.pages[0]
+    #     foreground = PdfReader(overlay).pages[0]
+        
+    #     # merge the first two pages
+    #     background.merge_page(foreground)
+        
+    #     # add all pages to a writer
+    #     writer = PdfWriter()
+    #     for page in original.pages:
+    #         writer.add_page(page)
+        
+    #     # write everything in the writer to a file
+    #     with open("modified.pdf", "wb") as outFile:
+    #         writer.write(outFile)

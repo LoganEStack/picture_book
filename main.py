@@ -20,6 +20,5 @@ if __name__ == "__main__":
 
     # Extract topics and issue curl to generate pictures
     page_topics = model.print_topics(num_topics=NUM_TOPICS, num_words=NUM_WORDS)
-    print(page_topics)
     pictures = generate_pictures(page_topics)
     add_pics_to_pdf(path, pictures)

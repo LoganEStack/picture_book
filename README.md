@@ -82,7 +82,7 @@ with "_picture_book" attached to the end of the file name.
 - [x] API connection to DeepAI
 - [x] Insertion of images into pdf
 - [ ] Better topic modeling for more accurate images
-- [ ] Better scanning of pdf files (currently does not work for scanned files)
+- [ ] Better scanning of pdf files (currently does not work for scanned files, only text)
 - [ ] Find a better free API for image generation (DeepAI isn't great for this purpose)
 
 
