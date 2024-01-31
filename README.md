@@ -62,6 +62,14 @@ Contains all logic related to the extraction and representation of a page's cent
 This project can be used to improve any novel or short story 
 that you ever thought "needed more pictures."
 
+### API Key
+
+picture_book makes a REST API request to an AI image generator in order to produce each 
+page's illustration. The file where this is handled (generate_pictures.py) is set up to 
+call DeepAI and requires that the user enter a key for the software. If another image 
+generator is preferred, the cURL command can easily be swapped out here for that of 
+another API.
+
 ### Input
 
 The input to the project is a call to the main python file followed by a parameter 
